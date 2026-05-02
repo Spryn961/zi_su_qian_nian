@@ -1,5 +1,4 @@
 import streamlit as st
-import opencc
 from xiaozhuan_dict import xiaozhuan_dict
 import random
 from PIL import Image
@@ -78,9 +77,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 初始化转换工具
-converter_s2t = opencc.OpenCC('s2t')
-converter_t2s = opencc.OpenCC('t2s')
+# ===================== 【已替换】用 zhconv 实现简繁互转 =====================
+def s2t(text):
+    return zhconv.convert(text, 'zh-hant')  # 简体 → 繁体
+
+def t2s(text):
+    return zhconv.convert(text, 'zh-cn')    # 繁体 → 简体
+
 reverse_xiaozhuan = {v: k for k, v in xiaozhuan_dict.items()}
 
 # 页面状态控制
@@ -123,11 +126,11 @@ elif st.session_state.page == "tool":
     with col1:
         if st.button("简体转繁体"):
             if text:
-                st.success(converter_s2t.convert(text))
+                st.success(s2t(text))  # 已改成 zhconv
     with col2:
         if st.button("繁体转简体"):
             if text:
-                st.success(converter_t2s.convert(text))
+                st.success(t2s(text))  # 已改成 zhconv
 
     # 2.古文字异体字转简体
     st.markdown('<div class="section-title">二、古文字转标准简体</div>', unsafe_allow_html=True)
