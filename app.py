@@ -1,5 +1,6 @@
 import streamlit as st
 from xiaozhuan_dict import xiaozhuan_dict
+from lishu_dict import lishu_dict
 import random
 from PIL import Image
 import zhconv
@@ -16,7 +17,7 @@ st.markdown("""
 <style>
 /* 全局背景 竹简古风 */
 .stApp {
-    background-image: url("https://img0.baidu.com/it/u=1232555183,3820567139&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500");
+    background-image: url("https://img0.baidu.com/it/u=1232555183,3820567139/fm=253/fmt=auto/app=138/f=JPEG?w=800/h=500");
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
@@ -77,20 +78,78 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ===================== 【已替换】用 zhconv 实现简繁互转 =====================
+# # ===================== 隶书字典（你提供的完整版） =====================
+# lishu_dict = {
+#     # 基础天地自然
+#     "人": "人", "天": "天", "地": "地", "日": "日", "月": "月", "山": "山", "水": "水",
+#     "木": "木", "火": "火", "土": "土", "风": "風", "云": "雲", "雨": "雨", "雷": "雷",
+#     "星": "星", "光": "光", "石": "石", "金": "金", "玉": "玉", "江": "江", "河": "河",
+#     "湖": "湖", "海": "海", "花": "花", "草": "草", "林": "林", "森": "森",
+#
+#     # 人体五官
+#     "心": "心", "口": "口", "手": "手", "目": "目", "耳": "耳", "头": "頭", "身": "身",
+#     "女": "女", "子": "子", "父": "父", "母": "母", "兄": "兄", "弟": "弟", "老": "老",
+#
+#     # 方位上下
+#     "上": "上", "下": "下", "左": "左", "右": "右", "中": "中", "内": "內", "外": "外",
+#     "前": "前", "后": "後", "东": "東", "西": "西", "南": "南", "北": "北",
+#
+#     # 数字
+#     "一": "一", "二": "二", "三": "三", "四": "四", "五": "五", "六": "六", "七": "七",
+#     "八": "八", "九": "九", "十": "十", "百": "百", "千": "千", "万": "萬",
+#
+#     # 人文生活
+#     "国": "國", "家": "家", "门": "門", "户": "戶", "城": "城", "市": "市", "房": "房",
+#     "屋": "屋", "车": "車", "马": "馬", "牛": "牛", "羊": "羊", "鸟": "鳥", "鱼": "魚",
+#     "食": "食", "衣": "衣", "行": "行", "住": "住",
+#
+#     # 学习文化
+#     "文": "文", "字": "字", "书": "書", "画": "畫", "学": "學", "习": "習", "师": "師",
+#     "生": "生", "知": "知", "道": "道", "经": "經", "典": "典", "诗": "詩", "礼": "禮",
+#     "乐": "樂",
+#
+#     # 品德性情
+#     "仁": "仁", "义": "義", "礼": "禮", "智": "智", "信": "信", "忠": "忠", "孝": "孝",
+#     "善": "善", "德": "德", "和": "和", "爱": "愛", "情": "情", "思": "思", "念": "念",
+#     "喜": "喜", "乐": "樂",
+#
+#     # 形态形容
+#     "大": "大", "小": "小", "高": "高", "低": "低", "长": "長", "远": "遠", "多": "多",
+#     "少": "少", "新": "新", "旧": "舊", "明": "明", "暗": "暗",
+#
+#     # 动作
+#     "看": "看", "听": "聽", "说": "說", "读": "讀", "写": "寫", "走": "走", "立": "立",
+#     "坐": "坐", "起": "起", "飞": "飛",
+#
+#     # 时间四季
+#     "年": "年", "时": "時", "春": "春", "夏": "夏", "秋": "秋", "冬": "冬", "朝": "朝",
+#     "夕": "夕", "昼": "晝", "夜": "夜",
+#
+#     # 吉祥成语常用字
+#     "吉": "吉", "祥": "祥", "安": "安", "康": "康", "宁": "寧", "富": "富", "贵": "貴",
+#     "福": "福", "寿": "壽", "如": "如", "意": "意", "太": "太", "平": "平", "华": "華",
+#     "龙": "龍", "凤": "鳳", "神": "神", "圣": "聖"
+# }
+
+
+# ===================== 简繁转换（不变） =====================
 def s2t(text):
-    return zhconv.convert(text, 'zh-hant')  # 简体 → 繁体
+    return zhconv.convert(text, 'zh-hant')
+
 
 def t2s(text):
-    return zhconv.convert(text, 'zh-cn')    # 繁体 → 简体
+    return zhconv.convert(text, 'zh-cn')
 
+
+# 反向字典（用于识别）
 reverse_xiaozhuan = {v: k for k, v in xiaozhuan_dict.items()}
+reverse_lishu = {v: k for k, v in lishu_dict.items()}
 
 # 页面状态控制
 if "page" not in st.session_state:
     st.session_state.page = "welcome"
 
-# ===================== 古风开场首页 =====================
+# ===================== 古风开场首页（不变） =====================
 if st.session_state.page == "welcome":
     st.markdown('<div class="main-title">字 溯 千 年</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-title">汉字多形态双向翻译工具 · 传承华夏文脉</div>', unsafe_allow_html=True)
@@ -110,7 +169,7 @@ if st.session_state.page == "welcome":
         st.session_state.page = "tool"
         st.rerun()
 
-# ===================== 文字转换功能主页（全部保留你的功能） =====================
+# ===================== 工具主页（只改字体生成部分） =====================
 elif st.session_state.page == "tool":
     if st.button("← 返回首页"):
         st.session_state.page = "welcome"
@@ -119,40 +178,48 @@ elif st.session_state.page == "tool":
     st.markdown('<div class="main-title" style="font-size:36px;">文字转换功能区</div>', unsafe_allow_html=True)
     st.markdown("---")
 
-    # 1.简繁互转
+    # 1.简繁互转（不变）
     st.markdown('<div class="section-title">一、简体 ↔ 繁体互转</div>', unsafe_allow_html=True)
     text = st.text_input("请输入任意文字")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("简体转繁体"):
             if text:
-                st.success(s2t(text))  # 已改成 zhconv
+                st.success(s2t(text))
     with col2:
         if st.button("繁体转简体"):
             if text:
-                st.success(t2s(text))  # 已改成 zhconv
+                st.success(t2s(text))
 
-    # 2.古文字异体字转简体
+    # 2.古文字异体字转简体（不变）
     st.markdown('<div class="section-title">二、古文字转标准简体</div>', unsafe_allow_html=True)
     old_text = st.text_input("输入古文字")
     if st.button("开始转换"):
         if old_text:
             st.success(f"转换结果：{zhconv.convert(old_text, 'zh-cn')}")
 
-    # 3.简体转小篆/隶书/甲骨文
+    # 3.简体转小篆 / 隶书（已升级！）
     st.markdown('<div class="section-title">三、简体字生成古代字体</div>', unsafe_allow_html=True)
     text_input3 = st.text_input("输入要转换的汉字")
-    style = st.selectbox("选择字体风格", ["小篆", "隶书", "甲骨文"])
+    style = st.selectbox("选择字体风格", ["小篆", "隶书"])
+
     if st.button("生成古文字"):
         if text_input3:
             result = ""
-            for char in text_input3:
-                result += xiaozhuan_dict.get(char, char)
-            st.success(f"生成结果：{result}")
+            # 根据选择自动切换字典
+            if style == "小篆":
+                selected_dict = xiaozhuan_dict
+            elif style == "隶书":
+                selected_dict = lishu_dict
 
-    # 4.古文字图片识别
+            for char in text_input3:
+                result += selected_dict.get(char, char)
+
+            st.success(f"【{style}】生成结果：{result}")
+
+    # 4.古文字图片识别（不变）
     st.markdown('<div class="section-title">四、古文字图片识别</div>', unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("上传古文字图片(png/jpg)", type=["png","jpg"])
+    uploaded_file = st.file_uploader("上传古文字图片(png/jpg)", type=["png", "jpg"])
     if uploaded_file:
         img = Image.open(uploaded_file)
         st.image(img, width=320)
