@@ -1,4 +1,4 @@
 streamlit
-opencc
+opencc-python-reimplemented==1.0.5
 zhconv
 Pillow
